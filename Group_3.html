@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoAI Tracker - Real-time AI Carbon Emissions Monitoring</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Chart.js for graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #2ecc71;
+            --secondary-color: #27ae60;
+            --dark-color: #2c3e50;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+        
+        .navbar {
+            background-color: var(--dark-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-brand {
+            font-weight: bold;
+            color: var(--primary-color) !important;
+        }
+        
+        .logo {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .emission-counter {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 250px;
+            margin-bottom: 20px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="https://cdn-icons-png.flaticon.com/512/1995/1995485.png" alt="EcoAI Logo" class="logo">
+                EcoAI Tracker
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Analytics</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-12 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title">Real-time AI Carbon Emissions</h2>
+                        <div class="emission-counter" id="currentEmission">0.00 kg CO₂</div>
+                        <p class="text-muted">Updated every minute</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Daily Emissions Trend</h5>
+                        <div class="chart-container">
+                            <canvas id="dailyChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Emission Sources</h5>
+                        <div class="chart-container">
+                            <canvas id="sourcesChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Emission Impact</h5>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="text-center">
+                                    <h3 id="treesEquivalent">0</h3>
+                                    <p class="text-muted">Trees needed to offset</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-center">
+                                    <h3 id="carMiles">0</h3>
+                                    <p class="text-muted">Car miles equivalent</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-center">
+                                    <h3 id="energyConsumption">0</h3>
+                                    <p class="text-muted">kWh of energy</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Informative Content Section -->
+    <div class="container mb-5">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Understanding AI Carbon Footprint</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 class="mt-3">Data Center Impact</h6>
+                                <p>An average data center consumes about 460 TWh of electricity per year, globally, or roughly 1.4-1.7% of global electricity use.
+                                    Which equals to the annual energy consumption of ~40 average homes [1]. This translates to approximately 300 metric tons of CO₂ emissions annually,
+                                    the same as driving a car for 750,000 miles.</p>
+                                
+                                <h6 class="mt-4">AI Model Training</h6>
+                                <p>"Training a single large language model like GPT-3 can emit as much as 552 metric tons of CO₂" [3],
+                                    equal to driving a car for 1.4 million miles or the annual carbon footprint of 120 average people [4].</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="mt-3">Everyday Comparisons</h6>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span>1 Google Search [5]</span>
+                                        <span class="badge bg-primary rounded-pill">0.2g CO₂</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span>1 Hour of Video Streaming [6]</span>
+                                        <span class="badge bg-primary rounded-pill">36g CO₂</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span>1 Hour of AI Model Training [7]</span>
+                                        <span class="badge bg-primary rounded-pill">284kg CO₂</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span>1 Data Center (Annual) [1]</span>
+                                        <span class="badge bg-primary rounded-pill">300t CO₂</span>
+                                    </li>
+                                </ul>
+                                <div class="alert alert-info mt-3">
+                                    <small>Note: These are approximate values based on industry averages. Actual emissions may vary based on energy sources, efficiency measures, and specific implementations.</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer mt-auto py-3 bg-dark text-light">
+        <div class="container">
+            <div class="references">
+                <h6 class="text-center mb-2">References</h6>
+                <div class="row">
+                    <div class="col-md-6">
+                        <ol class="list-unstyled" style="font-size: 0.8rem;">
+                            <li>[1] Canada Energy Regulator, "Market Snapshot: Energy demand from data centers is steadily increasing and AI development is a significant factor," Canada Energy Regulator, Mar. 20, 2024.</li>
+                            <li></li>
+                            <li>[2] E. Strubell, A. Ganesh, and A. McCallum, "Energy and policy considerations for deep learning in NLP," in Proc. ACL, 2019, pp. 3645-3650.</li>
+                            <li>[3] The Nature Conservancy, "Carbon Footprint Calculator," The Nature Conservancy. 2024.</li>
+                        </ol>
+                    </div>
+                    <div class="col-md-6">
+                        <ol class="list-unstyled" style="font-size: 0.8rem;" start="4">
+                            <li>[5] Google, "Google Environmental Report 2023," 2023.</li>
+                            <li>[6] The Shift Project, "Climate crisis: The unsustainable use of online video," 2019.</li>
+                            <li>[7] M. Patterson et al., "Carbon emissions and large neural network training," arXiv:2104.10350, 2021.</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-4" style="font-size: 0.7rem; opacity: 0.6;">
+                <p class="mb-1">Done by Group 3: Dzhanybek Zakiriiaev, Karl Santos, Adil Farid, Alli Demilade</p>
+                <p class="mb-0">Advanced Technical Communication - ENGL73170 - Winter 2025 - Section 3</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // Initialize charts
+        const dailyCtx = document.getElementById('dailyChart').getContext('2d');
+        const sourcesCtx = document.getElementById('sourcesChart').getContext('2d');
+
+        // Daily emissions chart
+        const dailyChart = new Chart(dailyCtx, {
+            type: 'line',
+            data: {
+                labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                datasets: [{
+                    label: 'CO₂ Emissions (kg)',
+                    data: [1250, 1450, 1320, 1580],
+                    borderColor: '#2ecc71',
+                    tension: 0.4,
+                    fill: true,
+                    backgroundColor: 'rgba(46, 204, 113, 0.1)'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'CO₂ Emissions (kg)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Sources chart
+        const sourcesChart = new Chart(sourcesCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Training', 'Inference', 'Data Processing', 'Storage'],
+                datasets: [{
+                    data: [2800, 2100, 1500, 800],
+                    backgroundColor: [
+                        '#2ecc71',
+                        '#27ae60',
+                        '#16a085',
+                        '#1abc9c'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'right'
+                    }
+                }
+            }
+        });
+
+        // Simulate real-time updates
+        function updateMetrics() {
+            const randomEmission = (Math.random() * 10).toFixed(2);
+            document.getElementById('currentEmission').textContent = `${randomEmission} kg CO₂`;
+            document.getElementById('treesEquivalent').textContent = Math.round(randomEmission * 0.5);
+            document.getElementById('carMiles').textContent = Math.round(randomEmission * 2.5);
+            document.getElementById('energyConsumption').textContent = Math.round(randomEmission * 0.8);
+        }
+
+        // Set initial values to monthly totals
+        document.getElementById('currentEmission').textContent = '7200 kg CO₂';
+        document.getElementById('treesEquivalent').textContent = '3600';
+        document.getElementById('carMiles').textContent = '18000';
+        document.getElementById('energyConsumption').textContent = '5760';
+    </script>
+</body>
+</html> 
